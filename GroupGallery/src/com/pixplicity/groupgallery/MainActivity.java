@@ -28,7 +28,7 @@ import com.google.android.gms.common.api.Status;
 
 public class MainActivity extends ActionBarActivity {
 
-    private static final String APP_ID = "9D751B66";
+    private static final String APP_ID = "824F5011";
 
     public static final String TAG = "MainActivity";
 
@@ -64,9 +64,9 @@ public class MainActivity extends ActionBarActivity {
 
     public GoogleApiClient mApiClient;
 
-    public ConnectionCallbacks mConnectionCallbacks;
+    public ConnectionCallbacks mConnectionCallbacks = new ConnectionCallbacks();
 
-    public OnConnectionFailedListener mConnectionFailedListener;
+    public OnConnectionFailedListener mConnectionFailedListener = new ConnectionFailedListener();
 
     public boolean mWaitingForReconnect;
 
@@ -124,6 +124,16 @@ public class MainActivity extends ActionBarActivity {
     private class MyMediaRouterCallback extends MediaRouter.Callback {
 
         @Override
+        public void onRouteAdded(MediaRouter router, RouteInfo route) {
+            super.onRouteAdded(router, route);
+        }
+
+        @Override
+        public void onRouteChanged(MediaRouter router, RouteInfo route) {
+            super.onRouteChanged(router, route);
+        }
+
+        @Override
         public void onRouteSelected(MediaRouter router, RouteInfo info) {
             mSelectedDevice = CastDevice.getFromBundle(info.getExtras());
             String routeId = info.getId();
@@ -138,6 +148,8 @@ public class MainActivity extends ActionBarActivity {
                     .addConnectionCallbacks(mConnectionCallbacks)
                     .addOnConnectionFailedListener(mConnectionFailedListener)
                     .build();
+
+            mApiClient.connect();
         }
 
         @Override
